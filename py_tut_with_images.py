@@ -34,6 +34,8 @@ SOUND_COLLISION = "Collision.ogg"
 VOLUME_COLLISION = 1.5
 COLOR_SKY = 135, 206, 250
 SPEED_HERO = 50
+SPEED_COVID_1 = 5
+SPEED_COVID_2 = 20
 #################################################################
 
 # Define the Player object extending pygame.sprite.Sprite
@@ -83,7 +85,7 @@ class Enemy(pygame.sprite.Sprite):
                 random.randint(0, SCREEN_HEIGHT),
             )
         )
-        self.speed = random.randint(5, 20)
+        self.speed = random.randint(SPEED_COVID_1, SPEED_COVID_2)
 
     # Move the enemy based on speed
     # Remove it when it passes the left edge of the screen
