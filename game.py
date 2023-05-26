@@ -14,6 +14,8 @@ from pygame.locals import (
 
 # IMPORTS ######################################################
 
+LEVEL = 1
+
 # VARIABLES ####################################################
 
 PLAYER_IMG = "boneco_covid.png"
@@ -22,18 +24,18 @@ CLOUD_IMG = "cloud.png"
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 COLOR_SKY = 135, 206, 250
-TIME_ENEMY = 500
+TIME_ENEMY = 300
 TIME_CLOUD = 500
 MUSIC = "Guns_N_Roses-Sweet_Child_Of_Mine.mp3"
 SOUND_MOVE_UP = "Rising_putter.ogg"
-VOLUME_MOVE_UP = 1.5
+VOLUME_MOVE_UP = 1
 SOUND_MOVE_DOWN = "Falling_putter.ogg"
-VOLUME_MOVE_DOWN = 1.5
+VOLUME_MOVE_DOWN = 1
 SOUND_COLLISION = "Collision.ogg"
-VOLUME_COLLISION = 1.5
+VOLUME_COLLISION = 5
 SPEED_PLAYER = 50
-SPEED_COVID_1 = 5
-SPEED_COVID_2 = 20
+SPEED_COVID_1 = 5 * LEVEL
+SPEED_COVID_2 = 10 * LEVEL
 
 # VARIABLES ####################################################
 
