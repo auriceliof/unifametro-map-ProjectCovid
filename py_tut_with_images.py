@@ -193,6 +193,7 @@ while not running:
     screen.blit(start_button_text, start_button_rect.topleft)
     pygame.display.flip()
 
+
 # FIRST SCREEN #############################################################
 
 # Load and play our background music
@@ -245,10 +246,15 @@ while running:
     if pygame.sprite.spritecollideany(player, enemies):
         # If so, then remove the player and stop the loop
         player.kill()
+        pygame.mixer.music.stop()
         move_up_sound.stop()
         move_down_sound.stop()
         collision_sound.play()
-        running = False
+        #running = False
+
+        game_over = font.render("GAME OVER!!!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(210, 100))
+        screen.blit(game_over, game_rect.center)
 
     # Update the display
     pygame.display.flip()
