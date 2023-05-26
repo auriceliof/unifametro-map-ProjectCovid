@@ -1,12 +1,6 @@
-# Import the pygame module
+# IMPORTS ######################################################
 import pygame
-
-# Import random for random numbers
 import random
-
-# Import pygame.locals for easier access to key coordinates
-# Updated to conform to flake8 and black standards
-# from pygame.locals import *
 from pygame.locals import (
     RLEACCEL,
     K_UP,
@@ -15,35 +9,52 @@ from pygame.locals import (
     K_RIGHT,
     K_ESCAPE,
     KEYDOWN,
-    QUIT,
+    QUIT, K_AT, K_DELETE, K_F10, K_KP_ENTER, WINDOWENTER, K_SPACE,
 )
-#################################################################
-# Define constants for the screen width and height
+
+# IMPORTS ######################################################
+
+# VARIABLES ####################################################
+
+PLAYER_IMG = "boneco_covid.png"
+ENEMY_IMG = "covid.png"
+CLOUD_IMG = "cloud.png"
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+COLOR_SKY = 135, 206, 250
 TIME_ENEMY = 500
 TIME_CLOUD = 500
-HERO = "boneco_covid.png"
 MUSIC = "Guns_N_Roses-Sweet_Child_Of_Mine.mp3"
-CLOUD = "cloud.png"
 SOUND_MOVE_UP = "Rising_putter.ogg"
 VOLUME_MOVE_UP = 1.5
 SOUND_MOVE_DOWN = "Falling_putter.ogg"
 VOLUME_MOVE_DOWN = 1.5
 SOUND_COLLISION = "Collision.ogg"
 VOLUME_COLLISION = 1.5
-COLOR_SKY = 135, 206, 250
-SPEED_HERO = 50
+SPEED_PLAYER = 50
 SPEED_COVID_1 = 5
 SPEED_COVID_2 = 20
-#################################################################
 
-# Define the Player object extending pygame.sprite.Sprite
-# Instead of a surface, we use an image for a better looking sprite
+# VARIABLES ####################################################
+
+# STARTUP ######################################################
+
+pygame.init()
+
+# Setup for sounds, defaults are good
+pygame.mixer.init()
+
+# Set up the font
+pygame.font.init()
+font = pygame.font.Font(None, 30)
+
+# STARTUP ######################################################
+
+# PLAYER ###########################################################
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.surf = pygame.image.load(HERO).convert()
+        self.surf = pygame.image.load(PLAYER_IMG).convert()
         self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surf.get_rect()
 
@@ -69,14 +80,13 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         elif self.rect.bottom >= SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
+# PLAYER ###########################################################
 
-
-# Define the enemy object extending pygame.sprite.Sprite
-# Instead of a surface, we use an image for a better looking sprite
+# ENEMY ############################################################
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.surf = pygame.image.load("covid.png").convert()
+        self.surf = pygame.image.load(ENEMY_IMG).convert()
         self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         # The starting position is randomly generated, as is the speed
         self.rect = self.surf.get_rect(
@@ -93,14 +103,13 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.move_ip(-self.speed, 0)
         if self.rect.right < 0:
             self.kill()
+# ENEMY ############################################################
 
-
-# Define the cloud object extending pygame.sprite.Sprite
-# Use an image for a better looking sprite
+# CLOUD ############################################################
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
-        self.surf = pygame.image.load(CLOUD).convert()
+        self.surf = pygame.image.load(CLOUD_IMG).convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         # The starting position is randomly generated
         self.rect = self.surf.get_rect(
@@ -116,19 +125,10 @@ class Cloud(pygame.sprite.Sprite):
         self.rect.move_ip(-5, 0)
         if self.rect.right < 0:
             self.kill()
+# CLOUD ############################################################
 
-
-# Setup for sounds, defaults are good
-pygame.mixer.init()
-
-# Initialize pygame
-pygame.init()
-
-# Setup the clock for a decent framerate
-clock = pygame.time.Clock()
-
+# GAME #############################################################
 # Create the screen object
-# The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Create custom events for adding a new enemy and cloud
@@ -149,14 +149,8 @@ clouds = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-# Load and play our background music
-# Sound source: http://ccmixter.org/files/Apoxode/59262
-# License: https://creativecommons.org/licenses/by/3.0/
-pygame.mixer.music.load(MUSIC)
-pygame.mixer.music.play(loops=-1)
 
 # Load all our sound files
-# Sound sources: Jon Fincher
 move_up_sound = pygame.mixer.Sound(SOUND_MOVE_UP)
 move_down_sound = pygame.mixer.Sound(SOUND_MOVE_DOWN)
 collision_sound = pygame.mixer.Sound(SOUND_COLLISION)
@@ -167,32 +161,80 @@ move_down_sound.set_volume(VOLUME_MOVE_DOWN)
 collision_sound.set_volume(VOLUME_COLLISION)
 
 # Variable to keep our main loop running
+running = False
+
+#### BEFORE GAME #############################################################
+# Our main loop
+while not running:
+    # Look at every event in the queue
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+            if event.key == K_SPACE:
+                running = True
+
+            elif event.key == K_ESCAPE:
+                pygame.quit()
+
+        elif event.type == QUIT:
+            running = True
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if start_button_rect.collidepoint(event.pos):
+                running = True
+
+    screen.fill(COLOR_SKY)
+
+#### BEFORE GAME #############################################################
+
+#### FIRST SCREEN #############################################################
+
+    # Draw "MENSAGE"
+    pygame.mixer.music.stop()
+    screen.fill('black')
+    game = font.render("VAMOS INICIAR O COMBATE AO CORONAVÍRUS", True, ('Yellow'))
+    game_rect = game.get_rect(center=(150, 110))
+    screen.blit(game, game_rect.center)
+
+    game = font.render("Clique no botão START ou pressione a BARRA DE ESPAÇO para iniciar", True, ('blue'))
+    game_rect = game.get_rect(center=(40, 400))
+    screen.blit(game, game_rect.center)
+
+    # Draw "START" button
+    start_button_text = font.render("  <  START  >  ", True, (0, 0, 0), ('#218c74'))
+    start_button_rect = start_button_text.get_rect(center=(380, 270))
+    screen.blit(start_button_text, start_button_rect.topleft)
+    pygame.display.flip()
+
+
+#### FIRST SCREEN #############################################################
+
+# Load and play our background music
+pygame.mixer.music.load(MUSIC)
+pygame.mixer.music.play(loops=-1)
+
+# Restart the clock for the main game loop
+clock = pygame.time.Clock()
+
+# Variable to keep our main loop running
 running = True
 
 # Our main loop
 while running:
-    # Look at every event in the queue
     for event in pygame.event.get():
-        # Did the user hit a key?
         if event.type == KEYDOWN:
-            # Was it the Escape key? If so, stop the loop
             if event.key == K_ESCAPE:
                 running = False
 
-        # Did the user click the window close button? If so, stop the loop
         elif event.type == QUIT:
             running = False
 
-        # Should we add a new enemy?
         elif event.type == ADDENEMY:
-            # Create the new enemy, and add it to our sprite groups
+            # Create a new enemy and add it to sprite groups
             new_enemy = Enemy()
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
 
-        # Should we add a new cloud?
         elif event.type == ADDCLOUD:
-            # Create the new cloud, and add it to our sprite groups
+            # Create a new cloud and add it to sprite groups
             new_cloud = Cloud()
             clouds.add(new_cloud)
             all_sprites.add(new_cloud)
@@ -201,36 +243,57 @@ while running:
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys)
 
-    # Update the position of our enemies and clouds
+    # Update enemy and cloud positions
     enemies.update()
     clouds.update()
 
-    # Fill the screen with sky blue
-    screen.fill((COLOR_SKY))
+    # Fill the screen with the background color
+    screen.fill(COLOR_SKY)
 
-    # Draw all our sprites
+    # Draw all sprites
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
 
     # Check if any enemies have collided with the player
     if pygame.sprite.spritecollideany(player, enemies):
-        # If so, remove the player
-        player.kill()
 
-        # Stop any moving sounds and play the collision sound
-        move_up_sound.stop()
-        move_down_sound.stop()
+        # If so, then remove the player and stop the loop
         collision_sound.play()
+        player.kill()
+        pygame.mixer.music.stop()
+        collision_sound.set_volume(0)
+        move_up_sound.set_volume(0)
+        move_down_sound.set_volume(0)
+        #running = False
 
-        # Stop the loop
-        running = False
+        ADDENEMY = pygame.USEREVENT + 1
+        pygame.time.set_timer(ADDENEMY, 1)
 
-    # Flip everything to the display
+        game_over = font.render("GAME OVER!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(330, 180))
+        screen.blit(game_over, game_rect.center)
+
+        game_over = font.render("VOCÊ FOI INFECTADO!!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(280, 280))
+        screen.blit(game_over, game_rect.center)
+
+        game_over = font.render("MANTENHA O DISTANCIAMENTO SOCIAL!!!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(180, 380))
+        screen.blit(game_over, game_rect.center)
+
+        #running = False
+    # Update the display
     pygame.display.flip()
 
-    # Ensure we maintain a 30 frames per second rate
-    clock.tick(SPEED_HERO)
 
-# At this point, we're done, so we can stop and quit the mixer
+
+    # Ensure the program maintains a rate of 30 frames per second
+    clock.tick(SPEED_PLAYER)
+
+
+# All done! Stop the music and quit the game
 pygame.mixer.music.stop()
 pygame.mixer.quit()
+pygame.quit()
+
+# GAME #############################################################
