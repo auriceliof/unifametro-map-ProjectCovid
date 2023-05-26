@@ -31,7 +31,7 @@ SOUND_MOVE_DOWN = "Falling_putter.ogg"
 VOLUME_MOVE_DOWN = 1.5
 SOUND_COLLISION = "Collision.ogg"
 VOLUME_COLLISION = 1.5
-SPEED_HERO = 50
+SPEED_PLAYER = 50
 SPEED_COVID_1 = 5
 SPEED_COVID_2 = 20
 
@@ -178,6 +178,7 @@ while not running:
 
     screen.fill(COLOR_SKY)
 
+
 # FIRST SCREEN #############################################################
 
     # Draw "MENSAGE"
@@ -244,23 +245,40 @@ while running:
 
     # Check if any enemies have collided with the player
     if pygame.sprite.spritecollideany(player, enemies):
+
         # If so, then remove the player and stop the loop
+        collision_sound.play()
         player.kill()
         pygame.mixer.music.stop()
-        move_up_sound.stop()
-        move_down_sound.stop()
-        collision_sound.play()
+        collision_sound.set_volume(0)
+        move_up_sound.set_volume(0)
+        move_down_sound.set_volume(0)
         #running = False
 
-        game_over = font.render("GAME OVER!!!", True, ('Red'))
-        game_rect = game_over.get_rect(center=(210, 100))
+        ADDENEMY = pygame.USEREVENT + 1
+        pygame.time.set_timer(ADDENEMY, 1)
+
+        game_over = font.render("GAME OVER!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(330, 180))
         screen.blit(game_over, game_rect.center)
 
+        game_over = font.render("VOCÊ FOI INFECTADO!!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(280, 280))
+        screen.blit(game_over, game_rect.center)
+
+        game_over = font.render("MANTENHA O DISTANCIAMENTO SOCIAL!!!", True, ('Red'))
+        game_rect = game_over.get_rect(center=(180, 380))
+        screen.blit(game_over, game_rect.center)
+
+        #running = False
     # Update the display
     pygame.display.flip()
 
+
+
     # Ensure the program maintains a rate of 30 frames per second
-    clock.tick(30)
+    clock.tick(SPEED_PLAYER)
+
 
 # All done! Stop the music and quit the game
 pygame.mixer.music.stop()
