@@ -9,12 +9,12 @@ from pygame.locals import (
     K_RIGHT,
     K_ESCAPE,
     KEYDOWN,
-    QUIT, K_AT, K_DELETE, K_F10, K_KP_ENTER, WINDOWENTER, K_SPACE,
+    QUIT, K_SPACE
 )
 
 # IMPORTS ######################################################
 
-LEVEL = 1
+LEVEL = 3
 
 # VARIABLES ####################################################
 
@@ -33,7 +33,7 @@ SOUND_MOVE_DOWN = "Falling_putter.ogg"
 VOLUME_MOVE_DOWN = 1
 SOUND_COLLISION = "Collision.ogg"
 VOLUME_COLLISION = 5
-SPEED_PLAYER = 50
+SPEED_PLAYER = 50 * LEVEL / 1.5
 SPEED_COVID_1 = 5 * LEVEL
 SPEED_COVID_2 = 10 * LEVEL
 
@@ -271,6 +271,7 @@ while running:
         ADDENEMY = pygame.USEREVENT + 1
         pygame.time.set_timer(ADDENEMY, 1)
 
+        # GAME_OVER MENSAGES
         game_over = font.render("GAME OVER!", True, ('Red'))
         game_rect = game_over.get_rect(center=(330, 180))
         screen.blit(game_over, game_rect.center)
